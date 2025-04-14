@@ -159,12 +159,55 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const keyboard = document.querySelector('.keyboard');
-            const phoneNumber = '5561991284353';
             
-            // Cria as teclas de 1 a 28
+            // Função para gerar número de WhatsApp aleatório no formato 55619XXXXXXXX
+            function generateRandomPhone() {
+                // Gera um número do Brasil (55) + DDD de Brasília (61) + 9 + 8 dígitos aleatórios
+                const randomPart = Math.floor(10000000 + Math.random() * 90000000);
+                return `5561${9}${randomPart}`;
+            }
+			
+            const celular = [[01, '5561991284323'],
+			                 [02, '5561991284323'],
+			                 [03, '5561991284323'],
+			                 [04, '5561991284323'],
+			                 [05, '5561991284323'],
+			                 [06, '5561991284323'],
+			                 [07, '5561991284323'],
+			                 [08, '5561991284323'],
+			                 [09, '5561991284323'],
+			                 [10, '5561991284323'],
+			                 [11, '5561991284323'],
+			                 [12, '5561991284323'],
+			                 [13, '5561991284323'],
+			                 [14, '5561991284323'],
+			                 [15, '5561991284323'],
+			                 [16, '5561991284323'],
+			                 [17, '5561991284323'],
+			                 [18, '5561991284323'],
+			                 [19, '5561991284323'],
+			                 [20, '5561991284323'],
+			                 [21, '5561991284323'],
+			                 [22, '5561991284323'],
+			                 [23, '5561991284323'],
+			                 [24, '5561991284323'],
+			                 [25, '5561991284323'],
+			                 [26, '5561991284323'],
+			                 [27, '5561991284323'],
+			                 [28, '5561991284323']
+			                ];
+            
+            // Cria as teclas de 1 a 28 com números aleatórios
             for (let i = 1; i <= 28; i++) {
                 const key = document.createElement('button');
                 key.className = 'key';
+                
+                // Gera um número de telefone aleatório para cada casa
+                const phoneNumber = celular[i-1][1];
+				console.log(phoneNumber);
+                
+                // Armazena o número no atributo data para recuperá-lo mais tarde
+                key.setAttribute('data-phone', phoneNumber);
                 
                 // Cria o formato de casa
                 const house = document.createElement('div');
@@ -191,8 +234,37 @@
                 
                 // Adiciona evento de clique para redirecionar ao WhatsApp
                 key.addEventListener('click', function() {
-                    const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=Olá! Estou na portaria do W Residence II.`;
+                    const phoneNum = this.getAttribute('data-phone');
+                    const url = `https://api.whatsapp.com/send?phone=${phoneNum}&text=Olá! Estou entrando em contato sobre o apartamento ${i} do W Residence II.`;
                     window.open(url, '_blank');
+                });
+                
+                // Adiciona evento para mostrar o número de WhatsApp ao passar o mouse
+                key.addEventListener('mouseover', function() {
+                    const tooltip = document.createElement('div');
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.bottom = '-40px';
+                    tooltip.style.left = '50%';
+                    tooltip.style.transform = 'translateX(-50%)';
+                    tooltip.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                    tooltip.style.padding = '4px 8px';
+                    tooltip.style.borderRadius = '4px';
+                    tooltip.style.fontSize = '12px';
+                    tooltip.style.zIndex = '10';
+                    
+                    // Formata o número para exibição
+                    //const formattedPhone = this.getAttribute('data-phone')
+                    //    .replace(/(\d{2})(\d{2})(\d{1})(\d{4})(\d{4})/, '+$1 ($2) $3$4-$5');
+                    
+                    //tooltip.textContent = formattedPhone;
+                    //this.appendChild(tooltip);
+                });
+                
+                key.addEventListener('mouseout', function() {
+                    const tooltip = this.querySelector('div[style*="position: absolute"]');
+                    if (tooltip) {
+                        this.removeChild(tooltip);
+                    }
                 });
                 
                 keyboard.appendChild(key);
