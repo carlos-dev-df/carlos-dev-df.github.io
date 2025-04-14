@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>W Residence II - Interfone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            letter-spacing: 1px;
+            color: #f8f8f8;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+        
+        .key {
+            aspect-ratio: 1/1;
+            position: relative;
+            background-color: #1e1e1e;
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .key:hover {
+            background-color: #2e2e2e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .key:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .house {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .roof {
+            width: 70%;
+            height: 30%;
+            background-color: #2d2d2d;
+            clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+            margin-bottom: -5%;
+        }
+        
+        .building {
+            width: 60%;
+            height: 45%;
+            background-color: #2d2d2d;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .number {
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 2;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+        }
+        
+        @media (max-width: 480px) {
+            .keyboard {
+                gap: 8px;
+            }
+            
+            .number {
+                font-size: 16px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>W Residence II</h1>
+        <div class="keyboard">
+            <!-- As teclas serão adicionadas via JavaScript -->
+        </div>
+        <div class="footer">
+            Clique em uma casa para contato via WhatsApp
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const keyboard = document.querySelector('.keyboard');
+            const phoneNumber = '5561991284353';
+            
+            // Cria as teclas de 1 a 28
+            for (let i = 1; i <= 28; i++) {
+                const key = document.createElement('button');
+                key.className = 'key';
+                
+                // Cria o formato de casa
+                const house = document.createElement('div');
+                house.className = 'house';
+                
+                // Telhado da casa
+                const roof = document.createElement('div');
+                roof.className = 'roof';
+                
+                // Corpo da casa
+                const building = document.createElement('div');
+                building.className = 'building';
+                
+                // Número dentro da casa
+                const number = document.createElement('div');
+                number.className = 'number';
+                number.textContent = i;
+                
+                // Montar a estrutura
+                building.appendChild(number);
+                house.appendChild(roof);
+                house.appendChild(building);
+                key.appendChild(house);
+                
+                // Adiciona evento de clique para redirecionar ao WhatsApp
+                key.addEventListener('click', function() {
+                    const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=Olá! Estou na portaria do W Residence II.`;
+                    window.open(url, '_blank');
+                });
+                
+                keyboard.appendChild(key);
+            }
+        });
+    </script>
+</body>
+</html>
