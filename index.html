@@ -193,10 +193,10 @@
                 [3, ['61985701001']],
                 [4, ['61998340982']],
                 [5, ['61999888500']],
-                [6, ['61984901290', '61984048758']],
+                [6, []],
                 [7, ['61992588656']],
                 [8, ['61985554367']],
-                [9, ['61981343734']],
+                [9, ['61992138055']],
                 [10, ['61991835057', '61991582922']],
                 [11, ['61981766100']],
                 [12, ['61984941662']],
@@ -255,7 +255,14 @@
                 key.addEventListener('click', function() {
                     const raw = this.getAttribute('data-phones');
                     const phones = raw ? JSON.parse(raw) : [];
-                    if (phones.length === 0) return;
+
+                    const options = document.getElementById('phoneOptions');
+                    options.innerHTML = '';
+
+                    if (phones.length === 0) {
+                        alert('Não disponível.');
+                        return;
+                    }
 
                     if (phones.length === 1) {
                         const url = `https://api.whatsapp.com/send?phone=${phones[0]}&text=Olá! Estou na portaria do W Residence II.`;
@@ -264,13 +271,11 @@
                     }
 
                     // Preenche o modal com as opções
-                    const options = document.getElementById('phoneOptions');
-                    options.innerHTML = '';
                     for (let k = 0; k < phones.length; k++) {
                         const btn = document.createElement('button');
                         btn.type = 'button';
                         btn.className = 'list-group-item list-group-item-action bg-transparent text-white border-0';
-                        btn.textContent = `Contato ${k+1}`;
+                        btn.textContent = `Contato ${k+1} — ${phones[k]}`;
                         btn.addEventListener('click', function() {
                             const url = `https://api.whatsapp.com/send?phone=${phones[k]}&text=Olá! Estou na portaria do W Residence II.`;
                             const modalEl = document.getElementById('phoneModal');
