@@ -30,7 +30,7 @@
             padding: 20px;
         }
         
-        .container {
+        .container2 {
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
@@ -144,9 +144,11 @@
             }
         }
     </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
+    <div class="container2">
         <h1>W Residence II</h1>
         <div class="keyboard">
             <!-- As teclas serão adicionadas via JavaScript -->
@@ -155,6 +157,23 @@
             Clique em uma casa para contato via WhatsApp
         </div>
     </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+        <!-- Modal Bootstrap para seleção de telefone -->
+        <div class="modal fade" id="phoneModal" tabindex="-1" aria-labelledby="phoneModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-white">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title" id="phoneModalLabel">Selecionar contato</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="phoneOptions" class="list-group"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -167,47 +186,47 @@
                 return `5561${9}${randomPart}`;
             }
 			
-            const celular = [[01, '61991008135'],
-			                 [02, '61981479051'],
-			                 [03, '61985701001'],
-			                 [04, '61998340982'],
-			                 [05, '61999888500'],
-			                 [06, '61984901290'],
-			                 [07, '61992588656'],
-			                 [08, '61985554367'],
-			                 [09, '61981343734'],
-			                 [10, '61991835057'],
-			                 [11, '61981766100'],
-			                 [12, '61984941662'],
-			                 [13, '61984061792'],
-			                 [14, '61999859183'],
-			                 [15, '61985131010'],
-			                 [16, '61996288918'],
-			                 [17, '61995054403'],
-			                 [18, '61993533223'],
-			                 [19, '61999962871'],
-			                 [20, '61984518599'],
-			                 [21, '61981730082'],
-			                 [22, '61999771276'],
-			                 [23, '61991284323'],
-			                 [24, '61992711231'],
-			                 [25, '61985532760'],
-			                 [26, '61981865789'],
-			                 [27, '61993833929'],
-			                 [28, '61996331179']
-			                ];
+            // Cada entrada: [número da casa, [array de telefones]]
+            const celular = [
+                [1, ['61991008135']],
+                [2, ['61981479051']],
+                [3, ['61985701001']],
+                [4, ['61998340982']],
+                [5, ['61999888500']],
+                [6, ['61984901290', '61984048758']],
+                [7, ['61992588656']],
+                [8, ['61985554367']],
+                [9, ['61981343734']],
+                [10, ['61991835057']],
+                [11, ['61981766100']],
+                [12, ['61984941662']],
+                [13, ['61984061792']],
+                [14, ['61999859183']],
+                [15, ['61985131010']],
+                [16, ['61996288918']],
+                [17, ['61995054403']],
+                [18, ['61993533223']],
+                [19, ['61999962871']],
+                [20, ['61984518599']],
+                [21, ['61981730082']],
+                [22, ['61999771276']],
+                [23, ['61991284323']],
+                [24, ['61992711231']],
+                [25, ['61985532760']],
+                [26, ['61981865789']],
+                [27, ['61993833929']],
+                [28, ['61996331179']]
+            ];
             
             // Cria as teclas de 1 a 28 com números aleatórios
             for (let i = 1; i <= 28; i++) {
                 const key = document.createElement('button');
                 key.className = 'key';
                 
-                // Gera um número de telefone aleatório para cada casa
-                const phoneNumber = celular[i-1][1];
-				console.log(phoneNumber);
-                
-                // Armazena o número no atributo data para recuperá-lo mais tarde
-                key.setAttribute('data-phone', phoneNumber);
+                // Recupera array de telefones para a casa
+                const phones = celular[i-1][1] || [];
+                // Armazena os telefones no atributo data (JSON)
+                key.setAttribute('data-phones', JSON.stringify(phones));
                 
                 // Cria o formato de casa
                 const house = document.createElement('div');
@@ -234,9 +253,37 @@
                 
                 // Adiciona evento de clique para redirecionar ao WhatsApp
                 key.addEventListener('click', function() {
-                    const phoneNum = this.getAttribute('data-phone');
-                    const url = `https://api.whatsapp.com/send?phone=${phoneNum}&text=Olá! Estou na portaria do W Residence II.`;
-                    window.open(url, '_blank');
+                    const raw = this.getAttribute('data-phones');
+                    const phones = raw ? JSON.parse(raw) : [];
+                    if (phones.length === 0) return;
+
+                    if (phones.length === 1) {
+                        const url = `https://api.whatsapp.com/send?phone=${phones[0]}&text=Olá! Estou na portaria do W Residence II.`;
+                        window.open(url, '_blank');
+                        return;
+                    }
+
+                    // Preenche o modal com as opções
+                    const options = document.getElementById('phoneOptions');
+                    options.innerHTML = '';
+                    for (let k = 0; k < phones.length; k++) {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'list-group-item list-group-item-action bg-transparent text-white border-0';
+                        btn.textContent = `Contato ${k+1}`;
+                        btn.addEventListener('click', function() {
+                            const url = `https://api.whatsapp.com/send?phone=${phones[k]}&text=Olá! Estou na portaria do W Residence II.`;
+                            const modalEl = document.getElementById('phoneModal');
+                            const modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                            window.open(url, '_blank');
+                        });
+                        options.appendChild(btn);
+                    }
+
+                    const modalEl = document.getElementById('phoneModal');
+                    const modal = new bootstrap.Modal(modalEl, {keyboard: true});
+                    modal.show();
                 });
                 
                 // Adiciona evento para mostrar o número de WhatsApp ao passar o mouse
